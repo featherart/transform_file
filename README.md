@@ -2,6 +2,8 @@
 
 ***Transform Voter Files: Parses a CSV of Ohio voters and pretty prints to a temporary text file for easier viewing***
 
+#### TBD: open data files from the remote source, parse into structs for validation then write to AVRO files
+
 #### To run file transform script from an interactive prompt:
 ```
 mix deps.get
