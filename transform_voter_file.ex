@@ -28,4 +28,22 @@ defmodule TransformVoterFile do
     temp_path
   end
 
+  # Stub function to download voter files from the Ohio SOS website and write to a temp .csv file
+  def download_voter_files do
+    url = "https://www6.ohiosos.gov/ords/f?p=VOTERFTP:STWD:::#stwdVtrFiles"
+    case HTTPoison.get(url) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        IO.puts("Downloaded HTML from Ohio SOS voter files page. Length: #{String.length(body)} bytes.")
+        temp_csv_path = "./test_data/downloaded_voters_temp.csv"
+        File.write!(temp_csv_path, body)
+        IO.puts("Wrote HTML response to #{temp_csv_path} (for demo; in production, parse and download actual CSV files)")
+        {:ok, temp_csv_path}
+      {:ok, %HTTPoison.Response{status_code: code}} ->
+        IO.puts("Failed to download page. Status code: #{code}")
+        {:error, code}
+      {:error, reason} ->
+        IO.puts("HTTP request failed: #{inspect(reason)}")
+        {:error, reason}
+    end
+  end
 end
