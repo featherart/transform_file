@@ -2,23 +2,27 @@ defmodule VoterAddress do
   defstruct [
     :SOS_voter_id,
     :street,
+    :mailing,
     :city,
     :state,
-    :zip
+    :zip,
+    :country
   ]
 
   def from_csv_line(line) do
-    [sos_id, street, _empty2, city, state, zip] =
+    [sos_id, street, mailing, city, state, zip, country] =
       line
       |> String.trim()
       |> String.split(",", trim: false)
 
     %__MODULE__{
       SOS_voter_id: sos_id,
-      street: street,
+      street: street == "true",
+      mailing: mailing == "true",
       city: city,
       state: state,
-      zip: zip
+      zip: zip,
+      country: country
     }
   end
 
@@ -46,32 +50,16 @@ defmodule VoterAddress do
     end
   end
 
-  # Writes a list of VoterAddress structs to an Avro file
-  def write_to_avro(addresses, file_path) when is_list(addresses) and is_binary(file_path) do
-    schema = %{
-      "type" => "record",
-      "name" => "VoterAddress",
-      "fields" => [
-        %{"name" => "SOS_voter_id", "type" => "string"},
-        %{"name" => "street", "type" => "string"},
-        %{"name" => "city", "type" => "string"},
-        %{"name" => "state", "type" => "string"},
-        %{"name" => "zip", "type" => "string"}
-      ]
-    }
+  # Associates a list of voters with their addresses by SOS_voter_id
+  # Returns a list of {voter, voter_address} tuples
+  def join_voters_with_addresses(voters, voter_addresses) when is_list(voters) and is_list(voter_addresses) do
+    address_map = Enum.reduce(voter_addresses, %{}, fn addr, acc ->
+      Map.put(acc, addr.SOS_voter_id, addr)
+    end)
 
-    avro_records =
-      Enum.map(addresses, fn addr ->
-        %{
-          "SOS_voter_id" => addr.SOS_voter_id || "",
-          "street" => addr.street || "",
-          "city" => addr.city || "",
-          "state" => addr.state || "",
-          "zip" => addr.zip || ""
-        }
-      end)
-
-    {:ok, avro_binary} = AvroEx.encode(schema, avro_records)
-    File.write!(file_path, avro_binary)
+    Enum.map(voters, fn voter ->
+      address = Map.get(address_map, voter.sos_voter_id)
+      {voter, address}
+    end)
   end
 end
