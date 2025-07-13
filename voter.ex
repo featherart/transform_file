@@ -11,7 +11,9 @@ defmodule Voter do
     :registration_date,
     :voter_status,
     :sos_voter_id,
-    :party_code
+    :party_code,
+    :district,
+    :precinct
   ]
 
   @doc """
@@ -44,5 +46,12 @@ defmodule Voter do
   """
   def party_name(%__MODULE__{party_code: code}) do
     PartyAffiliation.get_party_name(code)
+  end
+
+  @doc """
+  Returns the precinct name for a voter struct using Precinct lookup.
+  """
+  def precinct_name(%__MODULE__{precinct: code}) do
+    Precinct.get_name(code)
   end
 end
