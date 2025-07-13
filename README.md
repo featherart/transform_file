@@ -5,11 +5,13 @@
 ## Installation
 
 ### To run file transform script from an interactive prompt:
-### `mix compile`
-### `iex -S mix`
-### iex> `c "transform_voter_file.ex", "."`
-### iex> `filepath = "./test_data/test1.txt"`
-### iex> `TransformVoterFile.read_file_stream(filepath)`
+```
+`mix compile`
+`iex -S mix`
+iex> `c "transform_voter_file.ex", "."`
+iex> `filepath = "./test_data/test1.txt"`
+iex> `TransformVoterFile.read_file_stream(filepath)`
+```
 
 ### New file will be named `transformed_temp.txt`
 
