@@ -6,17 +6,22 @@ defmodule Voter do
     :last_name,
     :first_name,
     :middle_name,
-    :sos_voter_id
+    :suffix,
+    :dob,
+    :registration_date,
+    :voter_status,
+    :sos_voter_id,
+    :party_code
   ]
 
   @doc """
   Parses a CSV line into a Voter struct.
   Assumes the CSV columns are:
-    last_name, first_name, middle_name, street, city, state, zip
+    last_name, first_name, middle_name, suffix, dob, registration_date, voter_status, street, city, state, zip, party_code
   Adjust the order if your file is different.
   """
   def from_csv_line(line) do
-    [last_name, first_name, middle_name, street, city, state, zip] =
+    [last_name, first_name, middle_name, suffix, dob, registration_date, voter_status, street, city, state, zip, party_code] =
       line
       |> String.trim()
       |> String.split(",", trim: false)
