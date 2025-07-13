@@ -45,4 +45,33 @@ defmodule VoterAddress do
       {:error, "Invalid address fields"}
     end
   end
+
+  # Writes a list of VoterAddress structs to an Avro file
+  def write_to_avro(addresses, file_path) when is_list(addresses) and is_binary(file_path) do
+    schema = %{
+      "type" => "record",
+      "name" => "VoterAddress",
+      "fields" => [
+        %{"name" => "SOS_voter_id", "type" => "string"},
+        %{"name" => "street", "type" => "string"},
+        %{"name" => "city", "type" => "string"},
+        %{"name" => "state", "type" => "string"},
+        %{"name" => "zip", "type" => "string"}
+      ]
+    }
+
+    avro_records =
+      Enum.map(addresses, fn addr ->
+        %{
+          "SOS_voter_id" => addr.SOS_voter_id || "",
+          "street" => addr.street || "",
+          "city" => addr.city || "",
+          "state" => addr.state || "",
+          "zip" => addr.zip || ""
+        }
+      end)
+
+    {:ok, avro_binary} = AvroEx.encode(schema, avro_records)
+    File.write!(file_path, avro_binary)
+  end
 end
