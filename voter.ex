@@ -13,7 +13,8 @@ defmodule Voter do
     :sos_voter_id,
     :party_code,
     :district,
-    :precinct
+    :precinct,
+    :voter_history
   ]
 
   @doc """
