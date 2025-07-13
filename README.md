@@ -4,6 +4,7 @@
 
 #### To run file transform script from an interactive prompt:
 ```
+mix deps.get
 mix compile
 iex -S mix
 iex> c "transform_voter_file.ex", "."
